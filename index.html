@@ -18,8 +18,10 @@
             --accent: #eee; 
             --input-bg: #fafafa; 
             --radius: 15px; 
-            --vis-bg: #f0f0f0; 
-            --vis-text: #888; 
+            --vis-idsp-bg: #ffeded; /* IDSP: 薄い赤 */
+            --vis-idsp-text: #d93025;
+            --vis-tab-bg: #e8f0fe; /* TAB: 薄い青 */
+            --vis-tab-text: #1967d2;
         }
         
         * { 
@@ -59,12 +61,13 @@
 
         .hub-link { 
             text-decoration: none; font-size: 0.7rem; font-weight: 800; color: #999; 
-            background: transparent; border: 1px solid #ddd; padding: 3px 8px; border-radius: 10px; 
+            background: transparent; border: 1px solid #ddd; padding: 4px 8px; border-radius: 10px; 
             transition: 0.2s; cursor: pointer;
         }
         .hub-link:active { transform: scale(0.95); background: var(--accent); color: var(--main); }
 
-        .textarea-wrapper { position: relative; height: 130px; width: 100%; margin-bottom: 10px; }
+        /* キーボード表示時を考慮し、textareaの高さを少し詰める */
+        .textarea-wrapper { position: relative; height: 110px; width: 100%; margin-bottom: 10px; }
 
         textarea { 
             width: 100%; height: 100%; padding: 15px; border: 2px solid var(--accent); border-radius: var(--radius); 
@@ -98,14 +101,18 @@
             margin-bottom: 10px; transition: 0.3s;
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
         }
+        /* コピー成功時のフラッシュ演出を強化：枠線を緑に */
         .preview-area.flash { border-color: #4CAF50 !important; box-shadow: 0 0 10px rgba(76, 175, 80, 0.2); transition: none; }
 
+        /* 不可視文字タグの共通スタイル */
         .vis-tag {
             display: inline-block; padding: 1px 4px; font-weight: 800; font-size: 0.65rem;
-            background-color: var(--vis-bg); color: var(--vis-text);
             border-radius: 4px; margin: 0 1px; user-select: none; vertical-align: middle;
             font-family: -apple-system, sans-serif;
         }
+        /* IDSP(全角スペース)とTAB(タブ)を色分け */
+        .vis-idsp { background-color: var(--vis-idsp-bg); color: var(--vis-idsp-text); }
+        .vis-tab { background-color: var(--vis-tab-bg); color: var(--vis-tab-text); }
 
         .status-msg { height: 20px; text-align: center; font-size: 0.8rem; font-weight: 800; color: #4CAF50; margin-bottom: 5px; }
 
@@ -117,6 +124,8 @@
             cursor: pointer; transition: 0.15s; -webkit-appearance: none;
         }
         .action-btn:active { transform: scale(0.97) translateY(2px); opacity: 0.9; }
+        /* コピー成功時にボタンの色を変える演出 */
+        .action-btn.success { background-color: #4CAF50 !important; color: #fff !important; }
 
         footer { padding: 15px 0 25px; text-align: center; border-top: 1px solid #f5f5f5; font-size: 11px; color: #666; font-weight: 600; }
         .footer-btns { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
@@ -159,7 +168,7 @@
         <div class="status-msg" id="status"></div>
         
         <div class="btn-group">
-            <button class="action-btn" onclick="cleanAndCopy()">✨ CLEAN & COPY</button>
+            <button class="action-btn" id="actionBtn" onclick="cleanAndCopy()">✨ CLEAN & COPY</button>
         </div>
     </div>
 
@@ -191,6 +200,7 @@
     const previewBox = document.getElementById('preview-box');
     const clearWrapper = document.getElementById('clearWrapper');
     const status = document.getElementById('status');
+    const actionBtn = document.getElementById('actionBtn');
     const placeholderText = '<span style="color: #999;">Preview with highlights will appear here...</span>';
 
     window.onload = () => {
@@ -213,8 +223,9 @@
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;")
-            .replace(/\u3000/g, '<span class="vis-tag">IDSP</span>')
-            .replace(/\t/g, '<span class="vis-tag">TAB</span>');
+            // 不可視文字をタグで可視化し、色分けを適用
+            .replace(/\u3000/g, '<span class="vis-tag vis-idsp">IDSP</span>')
+            .replace(/\t/g, '<span class="vis-tag vis-tab">TAB</span>');
 
         previewBox.innerHTML = html;
     });
@@ -239,8 +250,17 @@
         }).join('\n');
 
         navigator.clipboard.writeText(cleanedText).then(() => {
+            // 演出：プレビュー窓をフラッシュ（枠線を緑に）
             previewBox.classList.add('flash');
             setTimeout(() => previewBox.classList.remove('flash'), 200);
+
+            // 演出：ボタンの色を一時的に緑に
+            actionBtn.classList.add('success');
+            actionBtn.innerText = "COPIED!";
+            setTimeout(() => {
+                actionBtn.classList.remove('success');
+                actionBtn.innerText = "✨ CLEAN & COPY";
+            }, 1000);
 
             status.innerText = "✨ CLEANED & COPIED!";
             setTimeout(() => { status.innerText = ""; }, 1800);
