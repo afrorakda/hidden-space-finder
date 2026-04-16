@@ -11,7 +11,7 @@
     <link rel="apple-touch-icon" href="image_16.png">
 
     <style>
-        :root { --main: #333; --bg: #fff; --accent: #eee; --input-bg: #fafafa; --radius: 15px; --color-idsp: #ffeded; --text-idsp: #d93025; --color-tab: #e8f0fe; --text-tab: #1967d2; }
+        :root { --main: #333; --bg: #fff; --accent: #eee; --input-bg: #fafafa; --radius: 15px; --vis-bg: #f0f0f0; --vis-text: #888; }
         
         * { 
             -webkit-touch-callout: none !important; 
@@ -50,7 +50,7 @@
 
         .hub-link { 
             text-decoration: none; font-size: 0.7rem; font-weight: 800; color: #999; 
-            background: transparent; border: 1px solid #ddd; padding: 4px 8px; border-radius: 10px; 
+            background: transparent; border: 1px solid #ddd; padding: 3px 8px; border-radius: 10px; 
             transition: 0.2s; cursor: pointer;
         }
         .hub-link:active { transform: scale(0.95); background: var(--accent); color: var(--main); }
@@ -66,9 +66,9 @@
             user-select: auto !important; -webkit-user-select: auto !important; 
         }
         textarea:focus { border-color: var(--main); background: #fff; }
-        textarea::placeholder { color: #bbb; }
+        textarea::placeholder { color: #bbb; -webkit-text-fill-color: #bbb; }
 
-        .btn-clear-wrapper { position: absolute; right: 10px; bottom: 10px; display: none; }
+        .btn-clear-wrapper { position: absolute; right: 12px; bottom: 12px; display: none; }
         .btn-clear-wrapper.show { display: block; }
         .btn-clear {
             width: 32px; height: 32px; background: rgba(0,0,0,0.05); color: #888; 
@@ -85,15 +85,15 @@
             border-radius: var(--radius); padding: 15px;
             font-size: 0.9rem; line-height: 1.6; color: #555; box-sizing: border-box;
             white-space: pre-wrap; word-wrap: break-word; overflow-y: auto;
-            margin-bottom: 10px;
+            margin-bottom: 10px; transition: 0.3s;
         }
+        .preview-area.flash { background-color: var(--accent) !important; transition: none; }
 
         .vis-tag {
             display: inline-block; padding: 1px 4px; font-weight: 800; font-size: 0.6rem;
+            background-color: var(--vis-bg); color: var(--vis-text);
             border-radius: 4px; margin: 0 1px; user-select: none; vertical-align: middle;
         }
-        .vis-idsp { background-color: var(--color-idsp); color: var(--text-idsp); }
-        .vis-tab  { background-color: var(--color-tab); color: var(--text-tab); }
 
         .status-msg { height: 20px; text-align: center; font-size: 0.75rem; font-weight: 800; color: var(--main); margin-bottom: 5px; }
 
@@ -101,7 +101,7 @@
         .action-btn {
             flex: 1; background-color: var(--main); color: #fff;
             border: none; border-radius: var(--radius);
-            padding: 16px; font-size: 0.9rem; font-weight: 800;
+            padding: 18px; font-size: 0.9rem; font-weight: 900;
             cursor: pointer; transition: 0.15s; -webkit-appearance: none;
         }
         .action-btn:active { transform: scale(0.97) translateY(2px); opacity: 0.9; }
@@ -197,8 +197,8 @@
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;")
-            .replace(/\u3000/g, '<span class="vis-tag vis-idsp">IDSP</span>')
-            .replace(/\t/g, '<span class="vis-tag vis-tab">TAB</span>')
+            .replace(/\u3000/g, '<span class="vis-tag">IDSP</span>')
+            .replace(/\t/g, '<span class="vis-tag">TAB</span>')
             .replace(/\r\n|\r/g, '\n');
 
         previewBox.innerHTML = html;
@@ -213,12 +213,17 @@
         const input = inputBox.value;
         if (!input) return;
 
+        // クリーンアップロジック：全角->半角, TAB->半角スペ2
         const cleanedText = input
             .replace(/\u3000/g, ' ')
-            .replace(/\t/g, '')
+            .replace(/\t/g, '  ')
             .replace(/\r\n|\r/g, '\n');
 
         navigator.clipboard.writeText(cleanedText).then(() => {
+            // 演出：プレビュー窓をフラッシュ
+            previewBox.classList.add('flash');
+            setTimeout(() => previewBox.classList.remove('flash'), 150);
+
             status.innerText = "✨ Cleaned & Copied!";
             setTimeout(() => { status.innerText = ""; }, 1800);
         });
