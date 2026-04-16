@@ -12,16 +12,16 @@
 
     <style>
         :root { 
-            --main: #444; 
-            --placeholder: #999;
+            --main: #333; 
+            --placeholder: #bbb;
             --bg: #fff; 
-            --accent: #eee; 
+            --accent: #ddd; 
             --input-bg: #fafafa; 
             --radius: 15px; 
-            --vis-idsp-bg: #ffeded;
-            --vis-idsp-text: #d93025;
-            --vis-tab-bg: #e8f0fe;
-            --vis-tab-text: #1967d2;
+            --vis-idsp-bg: #ffebee;
+            --vis-idsp-text: #c62828;
+            --vis-tab-bg: #e3f2fd;
+            --vis-tab-text: #1565c0;
         }
         
         * { 
@@ -41,7 +41,7 @@
         .container { 
             width: 100%; max-width: 380px; 
             display: flex; flex-direction: column; 
-            padding: 10px 20px 60px;
+            padding: 10px 20px 80px;
         }
 
         header { 
@@ -49,7 +49,7 @@
             margin-bottom: 15px; padding-top: 5px;
         }
         .title-group h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.8px; margin: 0; }
-        .subtitle { font-size: 0.75rem; color: #777; font-weight: 600; margin-top: 4px; }
+        .subtitle { font-size: 0.75rem; color: #666; font-weight: 600; margin-top: 4px; }
 
         .hub-link { 
             text-decoration: none; font-size: 0.7rem; font-weight: 800; color: #999; 
@@ -59,33 +59,33 @@
         .textarea-wrapper { position: relative; width: 100%; margin-bottom: 12px; }
 
         textarea { 
-            width: 100%; height: 120px; padding: 15px; border: 2px solid var(--accent); border-radius: var(--radius); 
+            width: 100%; height: 140px; padding: 15px; border: 2.5px solid var(--main); border-radius: var(--radius); 
             font-size: 17px; outline: none; transition: 0.2s; 
             background: var(--input-bg); line-height: 1.5; resize: none;
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
             -webkit-appearance: none; -webkit-text-fill-color: var(--main); opacity: 1 !important;
-            user-select: auto !important; -webkit-user-select: auto !important; 
+            color: var(--main);
         }
-        textarea:focus { border-color: var(--main); background: #fff; }
+        textarea:focus { background: #fff; box-shadow: 0 0 0 3px rgba(51,51,51,0.05); }
         textarea::placeholder { color: var(--placeholder); -webkit-text-fill-color: var(--placeholder); }
 
-        .btn-clear-wrapper { position: absolute; right: 10px; bottom: 10px; display: none; }
+        .btn-clear-wrapper { position: absolute; right: 12px; bottom: 12px; display: none; }
         .btn-clear-wrapper.show { display: block; }
         .btn-clear {
-            width: 32px; height: 32px; background: rgba(0,0,0,0.05); color: #888; 
+            width: 30px; height: 30px; background: #eee; color: #666; 
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 18px; font-weight: bold; cursor: pointer; border: 1px solid #eee;
+            font-size: 18px; font-weight: bold; cursor: pointer; border: none;
         }
 
-        .preview-label { font-size: 0.75rem; font-weight: 800; color: #aaa; margin-bottom: 6px; padding-left: 5px; }
+        .preview-label { font-size: 0.75rem; font-weight: 800; color: #888; margin-bottom: 6px; padding-left: 5px; }
         
         .preview-area {
-            width: 100%; min-height: 160px;
-            background-color: #fff; border: 2px solid #f0f0f0;
+            width: 100%; min-height: 180px;
+            background-color: #fff; border: 2px solid #eee;
             border-radius: var(--radius); padding: 15px;
             font-size: 17px; line-height: 1.5; color: var(--main); 
             white-space: pre-wrap; word-wrap: break-word;
-            margin-bottom: 15px; transition: 0.3s;
+            margin-bottom: 20px; transition: 0.3s;
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         }
         .preview-area.flash { border-color: #4CAF50 !important; box-shadow: 0 0 10px rgba(76, 175, 80, 0.2); transition: none; }
@@ -98,25 +98,25 @@
         .vis-idsp { background-color: var(--vis-idsp-bg); color: var(--vis-idsp-text); }
         .vis-tab { background-color: var(--vis-tab-bg); color: var(--vis-tab-text); }
 
-        .status-msg { height: 24px; text-align: center; font-size: 0.8rem; font-weight: 800; color: #4CAF50; margin-bottom: 5px; }
+        .status-msg { height: 24px; text-align: center; font-size: 0.8rem; font-weight: 800; color: #4CAF50; margin-bottom: 8px; }
 
         .btn-group { display: flex; gap: 8px; margin-bottom: 30px; }
         .action-btn {
             flex: 1; background-color: #222; color: #fff;
             border: none; border-radius: var(--radius);
-            padding: 20px; font-size: 1rem; font-weight: 900;
+            padding: 22px; font-size: 1rem; font-weight: 900;
             cursor: pointer; -webkit-appearance: none;
         }
         .action-btn:active { transform: scale(0.97); }
         .action-btn.success { background-color: #4CAF50 !important; }
 
-        footer { padding: 20px 0 40px; text-align: center; border-top: 1px solid #f5f5f5; font-size: 11px; color: #666; font-weight: 600; }
-        .footer-btns { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+        footer { padding: 30px 0 40px; text-align: center; border-top: 1px solid #f0f0f0; font-size: 11px; color: #666; font-weight: 600; }
+        .footer-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
         
         .outline-btn { 
-            background: #fff; color: var(--main); border: 2px solid var(--main); 
-            padding: 12px; border-radius: var(--radius); text-decoration: none; 
-            font-weight: 800; font-size: 12px; display: flex; align-items: center; justify-content: center;
+            background: #fff; color: var(--main); border: 2.5px solid var(--main); 
+            padding: 14px; border-radius: var(--radius); text-decoration: none; 
+            font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center;
         }
 
         #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; }
@@ -127,41 +127,39 @@
 <body>
 
 <div class="container">
-    <div class="main-unit">
-        <header>
-            <div class="title-group">
-                <h1>Hidden Space Finder</h1>
-                <p class="subtitle">Instantly reveal invisible characters.</p>
-            </div>
-            <a href="https://afrorakda.github.io/" class="hub-link">🏠 Hub</a>
-        </header>
-        
-        <div class="textarea-wrapper">
-            <textarea id="input-box" placeholder="Paste text here to scan..."></textarea>
-            <div id="clearWrapper" class="btn-clear-wrapper">
-                <div class="btn-clear" onclick="clearAll()">×</div>
-            </div>
+    <header>
+        <div class="title-group">
+            <h1>Hidden Space Finder</h1>
+            <p class="subtitle">Instantly reveal invisible characters.</p>
         </div>
-
-        <div class="preview-label">REAL-TIME SCAN</div>
-        <div id="preview-box" class="preview-area"></div>
-
-        <div class="status-msg" id="status"></div>
-        
-        <div class="btn-group">
-            <button class="action-btn" id="actionBtn" onclick="cleanAndCopy()">✨ CLEAN & COPY</button>
+        <a href="https://afrorakda.github.io/" class="hub-link">🏠 Hub</a>
+    </header>
+    
+    <div class="textarea-wrapper">
+        <textarea id="input-box" placeholder="Paste text here to scan..."></textarea>
+        <div id="clearWrapper" class="btn-clear-wrapper">
+            <div class="btn-clear" onclick="clearAll()">×</div>
         </div>
+    </div>
+
+    <div class="preview-label">REAL-TIME SCAN</div>
+    <div id="preview-box" class="preview-area"></div>
+
+    <div class="status-msg" id="status"></div>
+    
+    <div class="btn-group">
+        <button class="action-btn" id="actionBtn" onclick="cleanAndCopy()">✨ CLEAN & COPY</button>
     </div>
 
     <footer>
         <div class="footer-btns">
-            <a href="https://ko-fi.com/afrorakda" target="_blank" class="outline-btn" id="kofi-link">☕️buy me a coffee</a>
+            <a href="https://ko-fi.com/afrorakda" target="_blank" class="outline-btn">☕️buy me a coffee</a>
             <button class="outline-btn" onclick="showModal()" id="install-text">Add to Home Screen</button>
         </div>
         <div class="footer-info">
             No login / No tracking / No ads / Browser only<br>
-            <a href="https://afrorakda.com/privacy/" id="privacy-link">Privacy Policy</a><br>
-            <span id="copyright">Hidden Space Finder © 2026</span>
+            <a href="https://afrorakda.com/privacy/" style="color:inherit; text-decoration: underline;">Privacy Policy</a><br>
+            afrorakda © 2026
         </div>
     </footer>
 </div>
@@ -182,7 +180,7 @@
     const clearWrapper = document.getElementById('clearWrapper');
     const status = document.getElementById('status');
     const actionBtn = document.getElementById('actionBtn');
-    const placeholderText = '<span style="color: #999;">Preview will appear here...</span>';
+    const placeholderText = '<span style="color: #bbb;">Preview with highlights will appear here...</span>';
 
     window.onload = () => {
         previewBox.innerHTML = placeholderText;
@@ -256,15 +254,12 @@
             const response = await fetch('footer.json');
             if (!response.ok) return;
             const data = await response.json();
-            if(data.kofi) { document.getElementById('kofi-link').href = data.kofi.url; document.getElementById('kofi-link').textContent = data.kofi.text; }
             if(data.install) {
-                document.getElementById('install-text').textContent = data.install.text;
                 document.getElementById('modal-title').textContent = data.install.title;
                 document.getElementById('modal-msg').textContent = data.install.msg;
                 document.getElementById('modal-ios').textContent = data.install.ios;
                 document.getElementById('modal-android').textContent = data.install.android;
             }
-            if(data.privacy) document.getElementById('privacy-link').href = data.privacy.url;
         } catch (e) { console.error("Footer error."); }
     }
     window.addEventListener('DOMContentLoaded', loadFooter);
