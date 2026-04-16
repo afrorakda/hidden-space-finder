@@ -18,10 +18,9 @@
             --accent: #ddd; 
             --input-bg: #fafafa; 
             --radius: 15px; 
-            --vis-idsp-bg: #ffebee;
-            --vis-idsp-text: #c62828;
-            --vis-tab-bg: #e3f2fd;
-            --vis-tab-text: #1565c0;
+            /* タグの色を濃くして白抜き文字に */
+            --vis-idsp-bg: #d32f2f;
+            --vis-tab-bg: #1976d2;
         }
         
         * { 
@@ -64,7 +63,6 @@
             background: var(--input-bg); line-height: 1.5; resize: none;
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
             -webkit-appearance: none; -webkit-text-fill-color: var(--main); opacity: 1 !important;
-            color: var(--main);
         }
         textarea:focus { background: #fff; box-shadow: 0 0 0 3px rgba(51,51,51,0.05); }
         textarea::placeholder { color: var(--placeholder); -webkit-text-fill-color: var(--placeholder); }
@@ -84,19 +82,23 @@
             background-color: #fff; border: 2px solid #eee;
             border-radius: var(--radius); padding: 15px;
             font-size: 17px; line-height: 1.5; color: var(--main); 
-            white-space: pre-wrap; word-wrap: break-word;
+            /* 横スクロールを許容し、改行させない設定 */
+            white-space: pre; 
+            overflow-x: auto;
             margin-bottom: 20px; transition: 0.3s;
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         }
         .preview-area.flash { border-color: #4CAF50 !important; box-shadow: 0 0 10px rgba(76, 175, 80, 0.2); transition: none; }
 
         .vis-tag {
-            display: inline-block; padding: 1px 4px; font-weight: 800; font-size: 0.65rem;
+            display: inline-block; padding: 1px 5px; font-weight: 900; font-size: 0.6rem;
             border-radius: 4px; margin: 0 1px; user-select: none; vertical-align: middle;
             font-family: -apple-system, sans-serif;
+            color: #fff; /* 白抜き文字 */
+            letter-spacing: 0.5px;
         }
-        .vis-idsp { background-color: var(--vis-idsp-bg); color: var(--vis-idsp-text); }
-        .vis-tab { background-color: var(--vis-tab-bg); color: var(--vis-tab-text); }
+        .vis-idsp { background-color: var(--vis-idsp-bg); }
+        .vis-tab { background-color: var(--vis-tab-bg); }
 
         .status-msg { height: 24px; text-align: center; font-size: 0.8rem; font-weight: 800; color: #4CAF50; margin-bottom: 8px; }
 
@@ -142,7 +144,7 @@
         </div>
     </div>
 
-    <div class="preview-label">REAL-TIME SCAN</div>
+    <div class="preview-label">REAL-TIME SCAN (SCROLLABLE)</div>
     <div id="preview-box" class="preview-area"></div>
 
     <div class="status-msg" id="status"></div>
@@ -180,7 +182,7 @@
     const clearWrapper = document.getElementById('clearWrapper');
     const status = document.getElementById('status');
     const actionBtn = document.getElementById('actionBtn');
-    const placeholderText = '<span style="color: #bbb;">Preview with highlights will appear here...</span>';
+    const placeholderText = '<span style="color: #bbb;">Preview will appear here...</span>';
 
     window.onload = () => {
         previewBox.innerHTML = placeholderText;
