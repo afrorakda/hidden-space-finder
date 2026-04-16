@@ -11,7 +11,16 @@
     <link rel="apple-touch-icon" href="image_16.png">
 
     <style>
-        :root { --main: #333; --bg: #fff; --accent: #eee; --input-bg: #fafafa; --radius: 15px; --vis-bg: #f0f0f0; --vis-text: #888; }
+        :root { 
+            --main: #444; 
+            --placeholder: #999;
+            --bg: #fff; 
+            --accent: #eee; 
+            --input-bg: #fafafa; 
+            --radius: 15px; 
+            --vis-bg: #f0f0f0; 
+            --vis-text: #888; 
+        }
         
         * { 
             -webkit-touch-callout: none !important; 
@@ -55,18 +64,19 @@
         }
         .hub-link:active { transform: scale(0.95); background: var(--accent); color: var(--main); }
 
-        .textarea-wrapper { position: relative; height: 120px; width: 100%; margin-bottom: 10px; }
+        .textarea-wrapper { position: relative; height: 130px; width: 100%; margin-bottom: 10px; }
 
         textarea { 
             width: 100%; height: 100%; padding: 15px; border: 2px solid var(--accent); border-radius: var(--radius); 
-            box-sizing: border-box; font-size: 16px; outline: none; transition: 0.2s; 
+            box-sizing: border-box; font-size: 17px; outline: none; transition: 0.2s; 
             font-weight: 500; background: var(--input-bg);
             line-height: 1.5; resize: none;
-            -webkit-appearance: none; -webkit-text-fill-color: #333; opacity: 1 !important;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            -webkit-appearance: none; -webkit-text-fill-color: var(--main); opacity: 1 !important;
             user-select: auto !important; -webkit-user-select: auto !important; 
         }
         textarea:focus { border-color: var(--main); background: #fff; }
-        textarea::placeholder { color: #bbb; -webkit-text-fill-color: #bbb; }
+        textarea::placeholder { color: var(--placeholder); -webkit-text-fill-color: var(--placeholder); }
 
         .btn-clear-wrapper { position: absolute; right: 12px; bottom: 12px; display: none; }
         .btn-clear-wrapper.show { display: block; }
@@ -77,31 +87,33 @@
         }
         .btn-clear:active { background: #e63946; color: #fff; transform: scale(0.9); }
 
-        .preview-label { font-size: 0.7rem; font-weight: 800; color: #bbb; margin-bottom: 5px; padding-left: 5px; }
+        .preview-label { font-size: 0.75rem; font-weight: 800; color: #aaa; margin-bottom: 6px; padding-left: 5px; }
         
         .preview-area {
             width: 100%; flex-grow: 1;
-            background-color: #fff; border: 2px solid #f3f3f3;
+            background-color: #fff; border: 2px solid #f0f0f0;
             border-radius: var(--radius); padding: 15px;
-            font-size: 0.9rem; line-height: 1.6; color: #555; box-sizing: border-box;
+            font-size: 17px; line-height: 1.5; color: var(--main); box-sizing: border-box;
             white-space: pre-wrap; word-wrap: break-word; overflow-y: auto;
             margin-bottom: 10px; transition: 0.3s;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
         }
-        .preview-area.flash { background-color: var(--accent) !important; transition: none; }
+        .preview-area.flash { border-color: #4CAF50 !important; box-shadow: 0 0 10px rgba(76, 175, 80, 0.2); transition: none; }
 
         .vis-tag {
-            display: inline-block; padding: 1px 4px; font-weight: 800; font-size: 0.6rem;
+            display: inline-block; padding: 1px 4px; font-weight: 800; font-size: 0.65rem;
             background-color: var(--vis-bg); color: var(--vis-text);
             border-radius: 4px; margin: 0 1px; user-select: none; vertical-align: middle;
+            font-family: -apple-system, sans-serif;
         }
 
-        .status-msg { height: 20px; text-align: center; font-size: 0.75rem; font-weight: 800; color: var(--main); margin-bottom: 5px; }
+        .status-msg { height: 20px; text-align: center; font-size: 0.8rem; font-weight: 800; color: #4CAF50; margin-bottom: 5px; }
 
         .btn-group { display: flex; gap: 8px; margin-bottom: 10px; }
         .action-btn {
-            flex: 1; background-color: var(--main); color: #fff;
+            flex: 1; background-color: #222; color: #fff;
             border: none; border-radius: var(--radius);
-            padding: 18px; font-size: 0.9rem; font-weight: 900;
+            padding: 18px; font-size: 1rem; font-weight: 900;
             cursor: pointer; transition: 0.15s; -webkit-appearance: none;
         }
         .action-btn:active { transform: scale(0.97) translateY(2px); opacity: 0.9; }
@@ -135,21 +147,19 @@
         </header>
         
         <div class="textarea-wrapper">
-            <textarea id="input-box" placeholder="Paste text here..." oninput="findInvisibles()"></textarea>
+            <textarea id="input-box" placeholder="Paste text here to scan..."></textarea>
             <div id="clearWrapper" class="btn-clear-wrapper">
                 <div class="btn-clear" onclick="clearAll()">×</div>
             </div>
         </div>
 
         <div class="preview-label">REAL-TIME SCAN</div>
-        <div class="preview-area" id="preview-box">
-            <span style="color: #ccc;">Preview with highlights will appear here...</span>
-        </div>
+        <div id="preview-box" class="preview-area"></div>
 
         <div class="status-msg" id="status"></div>
         
         <div class="btn-group">
-            <button class="action-btn" onclick="cleanAndCopy()">✨ Clean & Copy</button>
+            <button class="action-btn" onclick="cleanAndCopy()">✨ CLEAN & COPY</button>
         </div>
     </div>
 
@@ -181,13 +191,19 @@
     const previewBox = document.getElementById('preview-box');
     const clearWrapper = document.getElementById('clearWrapper');
     const status = document.getElementById('status');
+    const placeholderText = '<span style="color: #999;">Preview with highlights will appear here...</span>';
 
-    function findInvisibles() {
+    window.onload = () => {
+        previewBox.innerHTML = placeholderText;
+        inputBox.focus();
+    };
+
+    inputBox.addEventListener('input', () => {
         const input = inputBox.value;
         toggleClearBtn(input);
         
         if (!input) {
-            previewBox.innerHTML = '<span style="color: #ccc;">Preview with highlights will appear here...</span>';
+            previewBox.innerHTML = placeholderText;
             return;
         }
 
@@ -198,11 +214,10 @@
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;")
             .replace(/\u3000/g, '<span class="vis-tag">IDSP</span>')
-            .replace(/\t/g, '<span class="vis-tag">TAB</span>')
-            .replace(/\r\n|\r/g, '\n');
+            .replace(/\t/g, '<span class="vis-tag">TAB</span>');
 
         previewBox.innerHTML = html;
-    }
+    });
 
     function toggleClearBtn(val) {
         if (val.length > 0) clearWrapper.classList.add('show');
@@ -213,25 +228,29 @@
         const input = inputBox.value;
         if (!input) return;
 
-        // クリーンアップロジック：全角->半角, TAB->半角スペ2
-        const cleanedText = input
-            .replace(/\u3000/g, ' ')
-            .replace(/\t/g, '  ')
-            .replace(/\r\n|\r/g, '\n');
+        // クリーンアップロジック：
+        // 1. 各行末の空白(全角/半角/TAB)を削除 (Trim end)
+        // 2. 全角スペースを半角スペースへ
+        // 3. TABを半角スペース2つへ
+        const cleanedText = input.split('\n').map(line => {
+            return line.replace(/[\s\u3000\t]+$/, '') // 行末の空白削除
+                       .replace(/\u3000/g, ' ')       // 全角->半角
+                       .replace(/\t/g, '  ');         // TAB->スペ2
+        }).join('\n');
 
         navigator.clipboard.writeText(cleanedText).then(() => {
-            // 演出：プレビュー窓をフラッシュ
             previewBox.classList.add('flash');
-            setTimeout(() => previewBox.classList.remove('flash'), 150);
+            setTimeout(() => previewBox.classList.remove('flash'), 200);
 
-            status.innerText = "✨ Cleaned & Copied!";
+            status.innerText = "✨ CLEANED & COPIED!";
             setTimeout(() => { status.innerText = ""; }, 1800);
         });
     }
 
     function clearAll() {
         inputBox.value = "";
-        findInvisibles();
+        previewBox.innerHTML = placeholderText;
+        clearWrapper.classList.remove('show');
         status.innerText = "";
         inputBox.focus();
     }
