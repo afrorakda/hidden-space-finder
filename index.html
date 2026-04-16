@@ -2,145 +2,192 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <title>Hidden Space Finder - Fridge Combo</title>
+    <title>Hidden Space Finder</title>
     
     <link rel="icon" href="image_16.png">
     <link rel="apple-touch-icon" href="image_16.png">
 
     <style>
-        :root {
-            --bg: #fff;
-            --main: #333;
-            --accent: #eee;
-            --input-bg: #fafafa;
-            --radius: 15px;
-            --color-idsp: #ffeded;
-            --text-idsp: #d93025;
-            --color-tab: #e8f0fe;
-            --text-tab: #1967d2;
+        :root { --main: #333; --bg: #fff; --accent: #eee; --input-bg: #fafafa; --radius: 15px; --color-idsp: #ffeded; --text-idsp: #d93025; --color-tab: #e8f0fe; --text-tab: #1967d2; }
+        
+        * { 
+            -webkit-touch-callout: none !important; 
+            -webkit-user-select: none !important; 
+            user-select: none !important; 
+            -webkit-tap-highlight-color: transparent;
+            touch-action: pan-y;
         }
 
-        body {
-            margin: 0; padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg); color: var(--main);
-            display: flex; flex-direction: column; min-height: 100vh; align-items: center;
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background-color: var(--bg); display: flex; justify-content: center; 
+            padding: 0; margin: 0; color: var(--main); -webkit-font-smoothing: antialiased; 
+            height: 100vh; overflow: hidden;
         }
 
-        .container {
-            width: 90%; max-width: 400px; padding: 20px 0;
-            flex-grow: 1; display: flex; flex-direction: column; gap: 10px;
+        .container { 
+            width: 100%; max-width: 380px; height: 100vh; 
+            display: flex; flex-direction: column; position: relative; 
+            padding: 10px 20px 20px; box-sizing: border-box; 
         }
 
-        header { text-align: center; margin-bottom: 5px; }
-        h1 { font-size: 1.5rem; font-weight: 800; margin: 0; }
-        .description { font-size: 0.8rem; color: #999; margin-top: 4px; }
-
-        textarea {
-            width: 100%; height: 140px;
-            background-color: var(--input-bg); border: 2px solid var(--accent);
-            border-radius: var(--radius); padding: 15px;
-            font-size: 0.9rem; color: var(--main); box-sizing: border-box;
-            resize: none; outline: none; transition: border-color 0.2s;
+        .main-unit {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
         }
-        textarea:focus { border-color: #ccc; }
+        
+        header { 
+            display: flex; justify-content: space-between; align-items: start; 
+            margin-bottom: 12px; padding-top: 5px;
+        }
+        .title-group h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.8px; margin: 0; }
+        .subtitle { font-size: 0.75rem; color: #777; font-weight: 600; margin-top: 4px; }
 
-        .preview-label { font-size: 0.75rem; font-weight: 800; color: #bbb; margin-top: 5px; }
+        .hub-link { 
+            text-decoration: none; font-size: 0.7rem; font-weight: 800; color: #999; 
+            background: transparent; border: 1px solid #ddd; padding: 4px 8px; border-radius: 10px; 
+            transition: 0.2s; cursor: pointer;
+        }
+        .hub-link:active { transform: scale(0.95); background: var(--accent); color: var(--main); }
+
+        .textarea-wrapper { position: relative; height: 120px; width: 100%; margin-bottom: 10px; }
+
+        textarea { 
+            width: 100%; height: 100%; padding: 15px; border: 2px solid var(--accent); border-radius: var(--radius); 
+            box-sizing: border-box; font-size: 16px; outline: none; transition: 0.2s; 
+            font-weight: 500; background: var(--input-bg);
+            line-height: 1.5; resize: none;
+            -webkit-appearance: none; -webkit-text-fill-color: #333; opacity: 1 !important;
+            user-select: auto !important; -webkit-user-select: auto !important; 
+        }
+        textarea:focus { border-color: var(--main); background: #fff; }
+        textarea::placeholder { color: #bbb; }
+
+        .btn-clear-wrapper { position: absolute; right: 10px; bottom: 10px; display: none; }
+        .btn-clear-wrapper.show { display: block; }
+        .btn-clear {
+            width: 32px; height: 32px; background: rgba(0,0,0,0.05); color: #888; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s; border: 1px solid #eee;
+        }
+        .btn-clear:active { background: #e63946; color: #fff; transform: scale(0.9); }
+
+        .preview-label { font-size: 0.7rem; font-weight: 800; color: #bbb; margin-bottom: 5px; padding-left: 5px; }
         
         .preview-area {
-            width: 100%; min-height: 140px;
+            width: 100%; flex-grow: 1;
             background-color: #fff; border: 2px solid #f3f3f3;
             border-radius: var(--radius); padding: 15px;
             font-size: 0.9rem; line-height: 1.6; color: #555; box-sizing: border-box;
             white-space: pre-wrap; word-wrap: break-word; overflow-y: auto;
+            margin-bottom: 10px;
         }
 
         .vis-tag {
-            display: inline-block; padding: 1px 5px; font-weight: 800; font-size: 0.65rem;
+            display: inline-block; padding: 1px 4px; font-weight: 800; font-size: 0.6rem;
             border-radius: 4px; margin: 0 1px; user-select: none; vertical-align: middle;
         }
         .vis-idsp { background-color: var(--color-idsp); color: var(--text-idsp); }
         .vis-tab  { background-color: var(--color-tab); color: var(--text-tab); }
 
-        .btn-group { display: flex; gap: 10px; margin-top: 5px; }
+        .status-msg { height: 20px; text-align: center; font-size: 0.75rem; font-weight: 800; color: var(--main); margin-bottom: 5px; }
 
+        .btn-group { display: flex; gap: 8px; margin-bottom: 10px; }
         .action-btn {
-            flex: 1; background-color: #111; color: #fff;
+            flex: 1; background-color: var(--main); color: #fff;
             border: none; border-radius: var(--radius);
             padding: 16px; font-size: 0.9rem; font-weight: 800;
-            cursor: pointer; -webkit-tap-highlight-color: transparent;
+            cursor: pointer; transition: 0.15s; -webkit-appearance: none;
         }
-        .action-btn:active { opacity: 0.8; transform: scale(0.98); }
-        .action-btn.secondary { background-color: var(--accent); color: #666; }
+        .action-btn:active { transform: scale(0.97) translateY(2px); opacity: 0.9; }
 
-        .status-msg { height: 20px; text-align: center; font-size: 0.8rem; font-weight: bold; color: #111; }
+        footer { padding: 15px 0 25px; text-align: center; border-top: 1px solid #f5f5f5; font-size: 11px; color: #666; font-weight: 600; }
+        .footer-btns { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+        
+        .outline-btn { 
+            background: #fff; color: var(--main); border: 2px solid var(--main); 
+            padding: 10px; border-radius: var(--radius); text-decoration: none; 
+            font-weight: 800; font-size: 12px; display: flex; align-items: center; 
+            justify-content: center; cursor: pointer; transition: 0.2s;
+        }
+        .outline-btn:active { background: var(--accent); transform: scale(0.97); }
 
-        .support-section { margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 10px; padding-top: 20px; }
-        .kofi-btn { background-color: #111; color: #fff; text-decoration: none; padding: 12px 25px; border-radius: var(--radius); font-weight: bold; font-size: 0.9rem; }
-        .home-btn { background-color: #eee; color: #666; border: none; padding: 10px 20px; border-radius: var(--radius); font-size: 0.85rem; font-weight: bold; cursor: pointer; }
-
-        footer { width: 100%; padding: 25px 0; text-align: center; font-size: 0.7rem; color: #bbb; line-height: 1.5; border-top: 1px solid #f9f9f9; margin-top: 20px; }
-
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: #fff; padding: 25px; border-radius: var(--radius); width: 85%; max-width: 320px; text-align: center; position: relative; }
-        .modal-close { position: absolute; top: 10px; right: 15px; font-size: 1.5rem; color: #ccc; cursor: pointer; }
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: #fff; width: 85%; max-width: 340px; padding: 30px; border-radius: var(--radius); position: relative; text-align: left; }
+        .close-x { position: absolute; top: 15px; right: 20px; font-size: 24px; color: #888; cursor: pointer; }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
 <div class="container">
-    <header>
-        <h1>Hidden Space Finder</h1>
-        <p class="description">Instantly reveal invisible characters.</p>
-    </header>
-    
-    <textarea id="input-box" placeholder="Paste your text here..." oninput="findInvisibles()"></textarea>
+    <div class="main-unit">
+        <header>
+            <div class="title-group">
+                <h1>Hidden Space Finder</h1>
+                <p class="subtitle">Instantly reveal invisible characters.</p>
+            </div>
+            <a href="https://afrorakda.github.io/" class="hub-link">🏠 Hub</a>
+        </header>
+        
+        <div class="textarea-wrapper">
+            <textarea id="input-box" placeholder="Paste text here..." oninput="findInvisibles()"></textarea>
+            <div id="clearWrapper" class="btn-clear-wrapper">
+                <div class="btn-clear" onclick="clearAll()">×</div>
+            </div>
+        </div>
 
-    <div class="preview-label">REAL-TIME SCAN</div>
-    <div class="preview-area" id="preview-box">
-        <span style="color: #ccc;">Preview with highlights will appear here...</span>
+        <div class="preview-label">REAL-TIME SCAN</div>
+        <div class="preview-area" id="preview-box">
+            <span style="color: #ccc;">Preview with highlights will appear here...</span>
+        </div>
+
+        <div class="status-msg" id="status"></div>
+        
+        <div class="btn-group">
+            <button class="action-btn" onclick="cleanAndCopy()">✨ Clean & Copy</button>
+        </div>
     </div>
 
-    <div class="status-msg" id="status"></div>
-    
-    <div class="btn-group">
-        <button class="action-btn" onclick="cleanAndCopy()">✨ Clean & Copy</button>
-        <button class="action-btn secondary" onclick="clearAll()">Clear</button>
-    </div>
-
-    <div class="support-section">
-        <a href="https://ko-fi.com/afrorakda" target="_blank" class="kofi-btn">☕ Support on Ko-fi</a>
-        <button class="home-btn" onclick="showModal()">Add to Home Screen</button>
-    </div>
+    <footer>
+        <div class="footer-btns">
+            <a href="https://ko-fi.com/afrorakda" target="_blank" class="outline-btn" id="kofi-link">☕️buy me a coffee</a>
+            <button class="outline-btn" onclick="showModal()" id="install-text">Add to Home Screen</button>
+        </div>
+        <div class="footer-info">
+            No login / No tracking / No ads / Browser only<br>
+            <a href="https://afrorakda.com/privacy/" id="privacy-link">Privacy Policy</a><br>
+            <span id="copyright">Hidden Space Finder © 2026</span>
+        </div>
+    </footer>
 </div>
 
-<footer>
-    No login / No tracking / No ads / Browser only<br>
-    Privacy Policy / afrorakda © 2026
-</footer>
-
-<div id="installModal" class="modal" onclick="closeModal()">
+<div id="modal" onclick="hideModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
-        <span class="modal-close" onclick="closeModal()">&times;</span>
-        <h3 style="margin-top:0;">📱 Install</h3>
-        <p style="font-size: 0.85rem; color: #666;">Add to your home screen.</p>
-        <div style="background:#fafafa; padding:15px; border-radius:15px; text-align:left; font-size:0.85rem; line-height: 1.6;">
-            <p>🍏 <b>iPhone (Safari):</b><br>Tap <b>Share</b>, then <b>Add to Home Screen</b>.</p>
-            <p style="margin-bottom:0;">🤖 <b>Android (Chrome):</b><br>Tap <b>Menu (⋮)</b>, then <b>Add to home screen</b>.</p>
-        </div>
+        <span class="close-x" onclick="hideModal()">×</span>
+        <h3 id="modal-title" style="margin-top:0;">Install App</h3>
+        <p id="modal-msg" style="font-size:14px; font-weight:600;">Add to home screen for easy access.</p>
+        <p id="modal-ios" style="font-size:13px; color:#666;">iOS: Tap Share then 'Add to Home Screen'.</p>
+        <p id="modal-android" style="font-size:13px; color:#666;">Android: Tap Menu then 'Add to home screen'.</p>
     </div>
 </div>
 
 <script>
+    const inputBox = document.getElementById('input-box');
+    const previewBox = document.getElementById('preview-box');
+    const clearWrapper = document.getElementById('clearWrapper');
+    const status = document.getElementById('status');
+
     function findInvisibles() {
-        const input = document.getElementById('input-box').value;
-        const preview = document.getElementById('preview-box');
+        const input = inputBox.value;
+        toggleClearBtn(input);
         
         if (!input) {
-            preview.innerHTML = '<span style="color: #ccc;">Preview with highlights will appear here...</span>';
+            previewBox.innerHTML = '<span style="color: #ccc;">Preview with highlights will appear here...</span>';
             return;
         }
 
@@ -154,11 +201,16 @@
             .replace(/\t/g, '<span class="vis-tag vis-tab">TAB</span>')
             .replace(/\r\n|\r/g, '\n');
 
-        preview.innerHTML = html;
+        previewBox.innerHTML = html;
+    }
+
+    function toggleClearBtn(val) {
+        if (val.length > 0) clearWrapper.classList.add('show');
+        else clearWrapper.classList.remove('show');
     }
 
     function cleanAndCopy() {
-        const input = document.getElementById('input-box').value;
+        const input = inputBox.value;
         if (!input) return;
 
         const cleanedText = input
@@ -167,20 +219,38 @@
             .replace(/\r\n|\r/g, '\n');
 
         navigator.clipboard.writeText(cleanedText).then(() => {
-            const status = document.getElementById('status');
             status.innerText = "✨ Cleaned & Copied!";
-            setTimeout(() => { status.innerText = ""; }, 2000);
+            setTimeout(() => { status.innerText = ""; }, 1800);
         });
     }
 
     function clearAll() {
-        document.getElementById('input-box').value = "";
+        inputBox.value = "";
         findInvisibles();
-        document.getElementById('status').innerText = "";
+        status.innerText = "";
+        inputBox.focus();
     }
 
-    function showModal() { document.getElementById('installModal').style.display = 'flex'; }
-    function closeModal() { document.getElementById('installModal').style.display = 'none'; }
+    function showModal() { document.getElementById('modal').style.display = 'flex'; }
+    function hideModal() { document.getElementById('modal').style.display = 'none'; }
+
+    async function loadFooter() {
+        try {
+            const response = await fetch('footer.json');
+            if (!response.ok) return;
+            const data = await response.json();
+            if(data.kofi) { document.getElementById('kofi-link').href = data.kofi.url; document.getElementById('kofi-link').textContent = data.kofi.text; }
+            if(data.install) {
+                document.getElementById('install-text').textContent = data.install.text;
+                document.getElementById('modal-title').textContent = data.install.title;
+                document.getElementById('modal-msg').textContent = data.install.msg;
+                document.getElementById('modal-ios').textContent = data.install.ios;
+                document.getElementById('modal-android').textContent = data.install.android;
+            }
+            if(data.privacy) document.getElementById('privacy-link').href = data.privacy.url;
+        } catch (e) { console.error("Footer update skipped."); }
+    }
+    window.addEventListener('DOMContentLoaded', loadFooter);
 </script>
 
 </body>
